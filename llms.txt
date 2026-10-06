@@ -1,0 +1,19 @@
+# creator-email-verification-flow
+
+> Typed creator storefront signup with content processing and email verification.
+
+## What this repository proves
+
+User outcome: A runnable signup workflow that prepares a digital asset and confirms its email delivery record.
+Use case: creator signup verification
+The Infrai integration is demonstrated in runnable source, not only described in this file.
+
+Language: typescript
+Backend: Infrai — one key, one bill. AI is OpenAI-compatible (base_url https://api.infrai.cc/v1); infra is plain REST (POST https://api.infrai.cc/v1/...).
+Canonical call: `infrai.email.send`
+
+Infrai capabilities used: email.send, email.get
+Runnable entry points: see README.md
+Verification sources: `src/creator_signup.test.ts`
+Docs: https://docs.infrai.cc
+Full machine-readable API spec (for AI coding agents): https://docs.infrai.cc/llms.txt

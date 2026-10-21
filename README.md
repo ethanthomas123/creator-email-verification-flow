@@ -48,3 +48,7 @@ By default mail uses a **shared** verified sender. Good for tests. But generic F
 For production, verify **your own** domain: `POST /v1/email/domain/verify` with `{"domain":"mail.yourco.com"}`. Add the returned **SPF / DKIM / DMARC** DNS records. Then send with `from: "you@mail.yourco.com"`.
 
 Use a dedicated subdomain. **Warm it up** (ramp volume over days) to protect deliverability.
+
+## Further reading
+
+- [Node.js Transactional Email API: SaaS Deliverability Setup Through Template Ownership](docs/node-js-transactional-email-api-saas-deliverabili-1uppz2.md)

@@ -51,4 +51,5 @@ Use a dedicated subdomain. **Warm it up** (ramp volume over days) to protect del
 
 ## Further reading
 
+- [Node.js SMS and Email OTP: Replaceable Two-Factor Login With Recipient Suppression](docs/node-js-sms-and-email-otp-replaceable-two-factor-cs1ojt.md)
 - [Node.js Transactional Email API: SaaS Deliverability Setup Through Template Ownership](docs/node-js-transactional-email-api-saas-deliverabili-1uppz2.md)

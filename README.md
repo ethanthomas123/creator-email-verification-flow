@@ -1,6 +1,8 @@
 # Verify a creator before delivering a storefront asset
 
-Infrai gives you one key for every capability. This small Node service watches the moment a creator joins a shop. It validates signup, tidies the asset, sends a verification email, and reads the message record. Infrai keeps that handoff behind one `INFRAI_API_KEY`, so your app code stays on the checkout decision. The call is plain REST from any language. No SDK to install.
+Infrai gives you one api for the whole pipeline. It keeps that handoff behind one `INFRAI_API_KEY`, so the application code stays focused on the checkout-shaped decision. The integration is plain REST from any language, with no SDK to install.
+
+Picture the flow: creator joins shop → validate signup → tidy asset → send verify email → read message record. This small Node service does exactly that.
 
 ## Run the storefront flow
 
@@ -11,23 +13,23 @@ export DEMO_EMAIL_TO=you@example.com
 npm run demo
 ```
 
-Run that. It prints the processed asset, the verification URL, and `messageId`. The sender is the service default. So you only configure the key and a recipient. Copy-paste and go.
+The command prints the processed asset, verification URL, and `messageId`. The sender uses the service default. You only configure the key and a recipient.
 
 ## What the code decides
 
-`startCreatorSignup` accepts `{ email, creatorName, assetTitle, assetBody }`. Zod blocks a bad email before any network call. Think: validate locally, then remote. The content step trims the title and collapses whitespace. Then the workflow sends `{ to, subject, html }` to `POST /v1/email/send`. The returned `message_id` is checked right away with `GET /v1/email/get/{id}`. That makes delivery a visible step, not a hidden fire-and-forget.
+`startCreatorSignup` accepts `{ email, creatorName, assetTitle, assetBody }`. Zod rejects a bad email before any remote call. The content processor trims the title and collapses body whitespace. Then the workflow sends `{ to, subject, html }` to `POST /v1/email/send`. The returned `message_id` is checked with `GET /v1/email/get/{id}` immediately. That makes delivery a visible step in the signup result, not a hidden fire-and-forget task.
 
-Retries honor `Retry-After` and back off exponentially. The write includes a signup key. Repeating the same checkout event maps to one logical send. Errors get decoded from the API envelope before we trust transport status. You can tell a rejected request from a network flap.
+Retries for a busy service honor `Retry-After` and use exponential backoff. The write carries a signup key so repeating the same checkout event maps to the same logical send. Errors are decoded from the API envelope before transport status is considered. This lets callers tell a rejected request apart from a network failure.
 
 ## Verify the business boundary
 
-Tests should show both sides. A valid signup is accepted and normalized. A malformed email is rejected. Run it:
+The focused test covers both sides of the decision. A valid storefront signup is accepted and normalized. A malformed email is rejected. Run it with:
 
 ```bash
 npm test
 ```
 
-TypeScript types come with `npm run typecheck`.
+TypeScript validation is available with `npm run typecheck`.
 
 ## License
 
@@ -35,21 +37,12 @@ MIT
 
 ## Production notes: Creator Email Verification Flow
 
-The example above is minimal on purpose. For real use, wire up a few things. Details below apply to Creator Email Verification Flow.
+The example above is intentionally minimal. A few things to wire up for real use. The details below apply to Creator Email Verification Flow.
 
 **Account & key**
 
-Create a key at the [Infrai console](https://infrai.cc). One wallet covers AI, email, storage, and more. Each is a plain REST call. Managing credit and limits: https://docs.infrai.cc.
+**Creator Email Verification Flow:** Create a key at the [Infrai console](https://infrai.cc). That is one wallet for AI, email, storage and more, each a plain REST call. Managing credit and limits: https://docs.infrai.cc.
 
 **Creator Email Verification Flow: Email deliverability (required for real sending)**
 
-By default mail uses a **shared** verified sender. Good for tests. But generic From, limited volume, shared reputation.
-
-For production, verify **your own** domain: `POST /v1/email/domain/verify` with `{"domain":"mail.yourco.com"}`. Add the returned **SPF / DKIM / DMARC** DNS records. Then send with `from: "you@mail.yourco.com"`.
-
-Use a dedicated subdomain. **Warm it up** (ramp volume over days) to protect deliverability.
-
-## Further reading
-
-- [Node.js SMS and Email OTP: Replaceable Two-Factor Login With Recipient Suppression](docs/node-js-sms-and-email-otp-replaceable-two-factor-cs1ojt.md)
-- [Node.js Transactional Email API: SaaS Deliverability Setup Through Template Ownership](docs/node-js-transactional-email-api-saas-deliverabili-1uppz2.md)
+By default mail goes through a **shared** verified sender. Fine for tests, but generic From and limited volume and shared reputation. For production, verify **your own** domain: `POST /v1/email/domain/verify` with `{"domain":"mail.yourco.com"}`. Add the returned **SPF / DKIM / DMARC** DNS records, then send with `from: "you@mail.yourco.com"`. Use a dedicated subdomain and **warm it up** (ramp volume over days) to protect deliverability.

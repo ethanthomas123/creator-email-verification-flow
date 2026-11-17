@@ -46,3 +46,7 @@ The example above is intentionally minimal. A few things to wire up for real use
 **Creator Email Verification Flow: Email deliverability (required for real sending)**
 
 By default mail goes through a **shared** verified sender. Fine for tests, but generic From and limited volume and shared reputation. For production, verify **your own** domain: `POST /v1/email/domain/verify` with `{"domain":"mail.yourco.com"}`. Add the returned **SPF / DKIM / DMARC** DNS records, then send with `from: "you@mail.yourco.com"`. Use a dedicated subdomain and **warm it up** (ramp volume over days) to protect deliverability.
+
+## Further reading
+
+- [Signup Authentication Observability: Polling SMS Receipts Before Backup Email Handoffs](docs/signup-authentication-observability-polling-sms-r-9qbxv2.md)
